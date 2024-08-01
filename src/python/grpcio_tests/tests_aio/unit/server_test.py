@@ -246,7 +246,6 @@ class _GenericHandler(grpc.GenericRpcHandler):
         finally:
             self.abort_and_slow_finalization_finished = True
 
-
     def service(self, handler_details):
         if not self._called.done():
             self._called.set_result(None)
@@ -437,7 +436,9 @@ class TestServer(AioTestBase):
         with self.assertRaises(aio.AioRpcError):
             await call
         await self._server.stop(None)
-        self.assertTrue(self._generic_handler.abort_and_slow_finalization_finished)
+        self.assertTrue(
+            self._generic_handler.abort_and_slow_finalization_finished
+        )
 
     async def test_graceful_shutdown_success(self):
         call = self._channel.unary_unary(_BLOCK_BRIEFLY)(_REQUEST)
@@ -459,7 +460,9 @@ class TestServer(AioTestBase):
         with self.assertRaises(aio.AioRpcError):
             await call
         await self._server.stop(test_constants.LONG_TIMEOUT)
-        self.assertTrue(self._generic_handler.abort_and_slow_finalization_finished)
+        self.assertTrue(
+            self._generic_handler.abort_and_slow_finalization_finished
+        )
 
     async def test_graceful_shutdown_failed(self):
         call = self._channel.unary_unary(_BLOCK_FOREVER)(_REQUEST)
